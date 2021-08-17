@@ -1,25 +1,115 @@
-!%  +include_path=../Inform6/library/,./extensions
-
 Constant Story      "Haunted House";
-Constant Headline   "^An Inform 6 port of Radio Shack's Model I/III adventure from 1981.^";
+Constant Headline   "^An Inform 6 port of Radio Shack's Model I/III adventure (circa 1979).^";
 
 
 Include "Parser";
+
+Object LibraryMessages
+    with before [;
+       
+        Buy:
+            "Petty commerce has rarely interested you.";
+        Dig:
+            "Your keen senses detect NOTHING underground worth your
+            immediate attention.";
+        Pray:
+            "You won't need to bother almighty DIVINITIES to save
+            the day.";
+        Sing:
+            "Alas! That is not one of your many superpowers.";
+        Sleep:
+            "A hero is ALWAYS on the watch.";
+        Sorry:
+        "Captain FATE has no time for apologies, only for
+            ACTION.";
+        Strong: 
+            "An unlikely vocabulary for a HERO like you.";
+        Swim:
+            "You quickly turn all your ATTENTION towards locating a
+            suitable place to EXERCISE your superior strokes,
+            but alas! you find none.";
+        Miscellany:
+            if (lm_n == 39)
+                print_ret "What you see is what you get.";
+    ];
+
+
 Include "VerbLib";
 
+
+
 ! ============================================================================ !
-! The game objects
+! Object classes
 ! ============================================================================ !
+Class Room
+    with    description "UNDER CONSTRUCTION",
+    has     light;
+
+Class Prop
+    with before [;
+            Examine: return false;
+            default:
+                print_ret "You don't need to worry about ", (the) self, ".";
+    ],
+    has scenery;
+
+
+Class Furniture
+    with before [;
+        Take,Pull,Push,PushDir:
+            print_ret (The) self, " is too heavy for that.";
+    ],
+    has static supporter;
+
+! ============================================================================ !
+! game objects
+! ============================================================================ !
+
+Room    outside_house  "Outside the house"
+    with    description "You are at the outside of the house.",   
+     name    'house';
+    
+
+Object    crumpled_paper "a crumpled piece of paper" outside_house
+    with    description "",
+            before [;
+                Consult,Examine:
+                    if (parent(crumpled_paper)==player)
+                        print_ret "It says, 'Magic word - PLUGH.'";
+                    else
+                        print_ret "You aren't carrying it.";
+                
+    ],
+    name    'paper' 'crumpled'
+;
+
+! Object  mailbox "mailbox" outside_house
+!     with    description "It's old, but you can probably still open it.",
+!     name    'mail' 'box',
+!     has     container openable;
+
+
+   
+
 
 
 ! ============================================================================ !
 ! Entry point routines
-[ Initialise; ];
+! ============================================================================ !
+[ Initialise; 
+    InitDoors(); 
+    location = outside_house;
+    "^^Generations have passed since the McDaniel family mysteriously disappeared. It is said that a stranger came to visit on that cold, Autumn day many years ago, but no one knows for sure. Their house has been vacant for decades now.
+    ^^Its two story image is forlorn and looming, visible only from the narrow, winding road that has been distorted by vegetation from the surrounding forest. The stone wall that encompasses the house is discolored and broken from years of neglect, its iron gate rusty and worn by angry seasons. The windows are boarded and the house is quiet and contented, not accustomed to visitors. The wind is restless today, blowing fallen leaves in all directions.
+    ^^As you walk towards the entrance of the house, the wind grows distant and weak. 
+    ^^Suddenly, the calm and silence is broken by sounds from within the house!"; ];
+
+[ DeathMessage; print "You have died."; ];
 
 
 
 ! ============================================================================ !
-
 Include "Grammar";
 
+Include "doors";
 ! ============================================================================ !
