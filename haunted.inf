@@ -1,0 +1,25 @@
+!%  +include_path=../Inform6/library/,./extensions
+
+Constant Story      "Haunted House";
+Constant Headline   "^An Inform 6 port of Radio Shack's Model I/III adventure from 1981.^";
+
+
+Include "Parser";
+Include "VerbLib";
+
+! ============================================================================ !
+! The game objects
+! ============================================================================ !
+
+
+! ============================================================================ !
+! Entry point routines
+[ Initialise; ];
+
+
+
+! ============================================================================ !
+
+Include "Grammar";
+
+! ============================================================================ !
