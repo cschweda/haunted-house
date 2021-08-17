@@ -9,25 +9,14 @@ Object LibraryMessages
        
         Buy:
             "Petty commerce has rarely interested you.";
-        Dig:
-            "Your keen senses detect NOTHING underground worth your
-            immediate attention.";
         Pray:
-            "You won't need to bother almighty DIVINITIES to save
-            the day.";
+            "No prayers for the wicked.";
         Sing:
-            "Alas! That is not one of your many superpowers.";
+            "Please.";
         Sleep:
-            "A hero is ALWAYS on the watch.";
+            "There's no sleeping here.";
         Sorry:
-        "Captain FATE has no time for apologies, only for
-            ACTION.";
-        Strong: 
-            "An unlikely vocabulary for a HERO like you.";
-        Swim:
-            "You quickly turn all your ATTENTION towards locating a
-            suitable place to EXERCISE your superior strokes,
-            but alas! you find none.";
+            "I knew you'd be.";
         Miscellany:
             if (lm_n == 39)
                 print_ret "What you see is what you get.";
@@ -70,17 +59,17 @@ Room    outside_house  "Outside the house"
      name    'house';
     
 
-Object    crumpled_paper "a crumpled piece of paper" outside_house
+Object   crumpled_paper "a crumpled piece of paper" outside_house
     with    description "",
             before [;
                 Consult,Examine:
                     if (parent(crumpled_paper)==player)
                         print_ret "It says, 'Magic word - PLUGH.'";
                     else
-                        print_ret "You aren't carrying it.";
+                        print_ret "You're not carrying it.";
                 
     ],
-    name    'paper' 'crumpled'
+    name    'paper' 'crumpled' 'piece'
 ;
 
 ! Object  mailbox "mailbox" outside_house
