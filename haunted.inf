@@ -1,6 +1,7 @@
+
+
 Constant Story      "Haunted House";
 Constant Headline   "^An Inform 6 port of Radio Shack's Model I/III adventure (circa 1979).^";
-
 
 Include "Parser";
 
@@ -25,13 +26,11 @@ Object LibraryMessages
 
 Include "VerbLib";
 
-
-
 ! ============================================================================ !
-! Object classes
+! Classes
 ! ============================================================================ !
 Class Room
-    with    description "UNDER CONSTRUCTION",
+    
     has     light;
 
 Class Prop
@@ -51,42 +50,150 @@ Class Furniture
     has static supporter;
 
 ! ============================================================================ !
-! game objects
+! Limbo
+! ============================================================================ !
+
+Object  limbo "Limbo"
+    with  description "How the hell did you get in here?";
+
+
+
+! ============================================================================ !
+! Outside the House
 ! ============================================================================ !
 
 Room    outside_house  "Outside the house"
-    with    description "You are at the outside of the house.",   
-     name    'house';
+    with    description "You are at the outside of the house. The front door is closed.", 
+     name    'house',
+     cant_go "A mysterious force keeps you planted in place.";
     
 
-Object   crumpled_paper "a crumpled piece of paper" outside_house
-    with    description "",
+Object   crumpled_paper "crumpled piece of paper" outside_house
+    with    description,
             before [;
                 Consult,Examine:
-                    if (parent(crumpled_paper)==player)
+                    if (parent(crumpled_paper)==player) {
                         print_ret "It says, 'Magic word - PLUGH.'";
-                    else
+                         }
+                    else {
                         print_ret "You're not carrying it.";
-                
+                    }     
     ],
     name    'paper' 'crumpled' 'piece'
 ;
 
-! Object  mailbox "mailbox" outside_house
-!     with    description "It's old, but you can probably still open it.",
-!     name    'mail' 'box',
-!     has     container openable;
+Object front_door "front door" outside_house
+    with    description "The front door.",
+    
+     before [;
+                Consult,Examine:
+                        print_ret "It is closed.";
+                Open:
+                    print_ret "You give it a push. It's stuck.";
+                
+                    
+                
+                    
+    ],
+    name 'door' 'front',
+    has door locked static scenery;
 
 
-   
 
+! ============================================================================ !
+! The Foyer
+! ============================================================================ !
+
+Room foyer "The Foyer"
+with description "You are in the foyer.",
+initial "^** You feel a vibration all around. Your surroundings blur. Suddenly, you materialize inside the house. **",
+name "foyer",
+e_to living_room;
+
+! ============================================================================ !
+! The Living Room
+! ============================================================================ !
+
+Room living_room "The living room"
+with description "You are in the living room.",
+
+name "living_room",
+w_to foyer,
+e_to dining_room;
+
+Object knife "knife" living_room
+with description "A knife.",
+before [; 
+
+    Take:
+        if (parent(scroll)==player && parent(knife)==living_room) {
+            move self to player;
+             score = score + 1;
+            print_ret "You reach out and snatch the knife from the air.";
+           
+        } else {
+            print_ret "The knife moves just out of your reach.";
+        }
+
+    Drop:
+        if (player in living_room) {
+            move self to living_room;
+            score = score - 1;
+            print_ret "^You drop the knife. Suddenly, it shakes, quivers, then slowly levitates a few feet above the floor.";
+        }
+
+    default:
+        deadflag = 1;
+        "^Suddenly the knife swoops down and slits your throat.";
+    
+],
+describe [;
+            if (parent(knife)==living_room) "^A knife is levitating in the middle of the room.";
+            else "^There is a knife here.";
+        ],
+name "knife" "levitating";
+
+
+Object scroll "mysterious scroll" living_room
+with description,
+initial [; "^There is a mysterious scroll on the ground.";],
+before [;
+                 Take:
+                    if (parent(knife)==living_room) {
+                        move self to player;
+                        print_ret "Taken. ^^The levitating knife slowly moves within your reach.";
+                    }
+
+                Consult,Examine:
+                    if (parent(scroll)==player) {
+                        print_ret "It says, 'There is ESCAPE from the second floor!'";
+                    }
+                    else {
+                         print_ret "You're not carrying it.";
+                    }
+                       
+                
+    ],
+describe [;
+            "^There is a mysterious scroll on the ground.";
+        ],
+name "scroll" "mysterious";
+
+! ============================================================================ !
+! The Dining Room
+! ============================================================================ !
+
+Room dining_room "The dining room",
+with description "You are in the dining room.",
+w_to living_room;
 
 
 ! ============================================================================ !
 ! Entry point routines
 ! ============================================================================ !
 [ Initialise; 
-    InitDoors(); 
+    InitDoors();
+    lookmode = 2;
     location = outside_house;
     "^^Generations have passed since the McDaniel family mysteriously disappeared. It is said that a stranger came to visit on that cold, Autumn day many years ago, but no one knows for sure. Their house has been vacant for decades now.
     ^^Its two story image is forlorn and looming, visible only from the narrow, winding road that has been distorted by vegetation from the surrounding forest. The stone wall that encompasses the house is discolored and broken from years of neglect, its iron gate rusty and worn by angry seasons. The windows are boarded and the house is quiet and contented, not accustomed to visitors. The wind is restless today, blowing fallen leaves in all directions.
@@ -99,6 +206,24 @@ Object   crumpled_paper "a crumpled piece of paper" outside_house
 
 ! ============================================================================ !
 Include "Grammar";
+
+[ PlughSub; 
+    if (player in outside_house) {
+         ClearScreen(WIN_MAIN);
+        score = score + 1;
+        PlayerTo(foyer);
+      
+        
+    } else {
+        print_ret "You feel a vibration all around. Then... nothing.";
+    }
+    ];
+[ PlughAltSub; "You speak. No one responds."; ];
+
+
+  Extend only 'say' 'shout' 'speak' replace
+      * 'plugh' -> Plugh
+      * topic  -> PlughAlt;
 
 Include "doors";
 ! ============================================================================ !
