@@ -4,11 +4,11 @@
 
 > An [Inform 6](https://www.inform-fiction.org/) port of Radio Shack's Model I/III adventure (circa 1979).
 
-<div class="text-center">
+<p align="center">
 
 <img src="https://github.com/cschweda/inform6-haunted-house/blob/main/hauntedhouse-trs-cover.jpg" alt="Haunted House Cover" />
 
-</div>
+</p>
 
 ## Original
 
