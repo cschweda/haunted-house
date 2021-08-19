@@ -2,7 +2,7 @@
 
 Constant Story      "Haunted House";
 Constant Headline   "^An Inform 6 port of Radio Shack's Model I/III adventure (circa 1979).^";
-
+Constant MAX_SCORE     = 4;
 Include "Parser";
 
 Object LibraryMessages
@@ -29,11 +29,15 @@ Include "VerbLib";
 ! ============================================================================ !
 ! Classes
 ! ============================================================================ !
+
 Class Room
-    
+with before [;
+            
+                  
+    ],
     has     light;
 
-Class Prop
+Class Scenic
     with before [;
             Examine: return false;
             default:
@@ -57,14 +61,13 @@ Object  limbo "Limbo"
     with  description "How the hell did you get in here?";
 
 
-
 ! ============================================================================ !
 ! Outside the House
 ! ============================================================================ !
 
 Room    outside_house  "Outside the house"
     with    description "You are at the outside of the house. The front door is closed.", 
-     name    'house',
+     name    'house' 'outside',
      cant_go "A mysterious force keeps you planted in place.";
     
 
@@ -106,18 +109,24 @@ Object front_door "front door" outside_house
 
 Room foyer "The Foyer"
 with description "You are in the foyer.",
-initial "^** You feel a vibration all around. Your surroundings blur. Suddenly, you materialize inside the house. **",
+initial [;
+    if (self hasnt visited) {
+         "^** You feel a vibration all around. Your surroundings blur. Suddenly, you materialize inside the house. **";
+     } else {
+        rfalse;
+     }],
 name "foyer",
+s_to den,
 e_to living_room;
 
 ! ============================================================================ !
 ! The Living Room
 ! ============================================================================ !
 
-Room living_room "The living room"
+Room living_room "The Living Room"
 with description "You are in the living room.",
 
-name "living_room",
+name "living",
 w_to foyer,
 e_to dining_room;
 
@@ -139,7 +148,7 @@ before [;
         if (player in living_room) {
             move self to living_room;
             score = score - 1;
-            print_ret "^You drop the knife. Suddenly, it shakes, quivers, then slowly levitates a few feet above the floor.";
+            print_ret "^You drop the knife. It shakes, quivers, then slowly levitates a few feet above the floor.";
         }
 
     default:
@@ -161,7 +170,7 @@ before [;
                  Take:
                     if (parent(knife)==living_room) {
                         move self to player;
-                        print_ret "Taken. ^^The levitating knife slowly moves within your reach.";
+                        print_ret "Taken. ^^The levitating knife zooms down and moves within your reach.";
                     }
 
                 Consult,Examine:
@@ -183,16 +192,107 @@ name "scroll" "mysterious";
 ! The Dining Room
 ! ============================================================================ !
 
-Room dining_room "The dining room",
+Room dining_room "The Dining Room",
 with description "You are in the dining room.",
-w_to living_room;
+name "dining",
+w_to living_room,
+s_to kitchen;
+
+! ============================================================================ !
+! Den
+! ============================================================================ !
+
+Room den "The Den",
+with description "You are in the den.",
+name "den",
+n_to foyer,
+e_to kitchen;
+
+! ============================================================================ !
+! Kitchen
+! ============================================================================ !
+
+Room kitchen "The Kitchen",
+with description "You are in the kitchen.",
+name "kitchen",
+n_to dining_room,
+w_to den,
+armor_fled 0,
+s_to [;
+    if (parent(knife)==player && self.armor_fled == 0) {
+        print "A suit of armor flees when it spots your knife!^^";
+        self.armor_fled = 1;
+        return breakfast_room;
+    } else if (parent(knife)~=player) {
+        print_ret "An animated suit of armor blocks your way!";
+    } else {
+       return breakfast_room;
+    }
+    ];
+
+
+Object bucket_of_water "bucket of water" kitchen
+  with name "bucket" "water",
+       description "A bucket of water is on the floor."
+  has  container openable;
+
+
+! ============================================================================ !
+! Breakfast Room
+! ============================================================================ !
+
+Room breakfast_room "The Breakfast Room",
+with description "You are in the breakfast room.",
+name "breakfast",
+
+n_to kitchen,
+w_to den,
+e_to servants_quarters_1;
+
+
+
+! ============================================================================ !
+! Servant's Quarters 1
+! ============================================================================ !
+
+Room servants_quarters_1 "The Servant's Quarters",
+with description "You are in the servant's quarters.",
+name "servants" "quarters" "servants1",
+w_to breakfast_room ,
+n_to servants_quarters_2;
+
+Furniture cabinet_empty "cabinet" servants_quarters_1
+  with name "cabinet" "cabinet1",
+       description "There is a cabinet on one wall."
+  has  container openable;
+
+
+! ============================================================================ !
+! Servant's Quarters 2
+! ============================================================================ !
+
+Room servants_quarters_2 "The Servant's Quarters",
+with description "You are in the servant's quarters.",
+name "servants" "quarters" "servants2",
+s_to servants_quarters_1;
+
+Object cabinet_with_key "cabinet" servants_quarters_2
+  with name "cabinet" "cabinet2",
+       description "There is a cabinet on one wall."
+  has  container openable;
+
+Object hall_door_key "small key" cabinet_with_key
+  with name "small" "key",
+       description "It's a small key."
+  ;
+
 
 
 ! ============================================================================ !
 ! Entry point routines
 ! ============================================================================ !
 [ Initialise; 
-    InitDoors();
+    
     lookmode = 2;
     location = outside_house;
     "^^Generations have passed since the McDaniel family mysteriously disappeared. It is said that a stranger came to visit on that cold, Autumn day many years ago, but no one knows for sure. Their house has been vacant for decades now.
@@ -202,28 +302,103 @@ w_to living_room;
 
 [ DeathMessage; print "You have died."; ];
 
+Include "Grammar";
+
 
 
 ! ============================================================================ !
-Include "Grammar";
+! Verb Updates
+! ============================================================================ !
 
+
+! ------------------------------------------------------------------------------
+!   Exit
+! ------------------------------------------------------------------------------
+
+
+[ NewExitSub; if (player in outside_house) {
+                    "Before you can EXIT the haunted house, you'll need to find a way inside.";
+                } else {
+                    "Exactly! Your goal is to exit the haunted house.";
+                }    ];
+
+Extend 'exit' first
+    *              -> NewExit
+    * 'house'   -> NewExit;
+! ------------------------------------------------------------------------------
+!   Magic words
+! ------------------------------------------------------------------------------
+
+
+[ OldMagicSub; "Nice try."; ];
 [ PlughSub; 
     if (player in outside_house) {
          ClearScreen(WIN_MAIN);
         score = score + 1;
-        PlayerTo(foyer);
+        <<Teleport foyer>>;
       
         
     } else {
-        print_ret "You feel a vibration all around. Then... nothing.";
+        print_ret "Sorry, only one PLUGH per customer.";
     }
     ];
-[ PlughAltSub; "You speak. No one responds."; ];
 
 
-  Extend only 'say' 'shout' 'speak' replace
-      * 'plugh' -> Plugh
-      * topic  -> PlughAlt;
+Verb 'xyzzy'
+    *                       -> OldMagic;
+Verb 'plugh'
+    *                       -> Plugh;
+Verb 'sesame' 'shazam' 'hocus' 'abracadabra' 'foobar' 'open-sesame' 'frotz'
+    *                       -> OldMagic;
 
-Include "doors";
+Extend 'say' first
+    * 'xyzzy'               -> Plugh
+    * 'plugh'               -> Plugh
+    * 'sesame'/'shazam'/'hocus'/'abracadabra'/'foobar'/'open-sesame'/'frotz'
+                            -> OldMagic;
+
+
+! ------------------------------------------------------------------------------
+!   Teleport
+! ------------------------------------------------------------------------------
+
+[ TeleportScope
+    obj;
+    switch (scope_stage) {
+      1:    rfalse;
+      2:    objectloop (obj ofclass Room)
+                if (obj hasnt visited || obj has visited) PlaceInScope(obj);
+            rtrue;
+      3:    return L__M(##Go, 2);
+    }
+];
+
+[ ZapScope
+    obj;
+    switch (scope_stage) {
+      1:    rfalse;
+      2:    objectloop (obj ofclass Room)
+                if (obj hasnt visited || obj has visited) PlaceInScope(obj);
+            rtrue;
+      3:    return L__M(##Go, 2);
+    }
+];
+
+
+
+[ TeleportSub;
+    if (noun == location) "But you're already here!";
+    PlayerTo(noun);
+];
+
+Extend 'go'
+    * scope=TeleportScope       -> Teleport
+    * 'to' scope=TeleportScope  -> Teleport;
+
+!#Ifndef DEBUG;
+Verb 'zap'
+    * scope=ZapScope       -> Teleport;
+!#Endif;
+
+
 ! ============================================================================ !
