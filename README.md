@@ -29,9 +29,3 @@ The game is written in [Inform 6](https://www.inform-fiction.org/) and compiled 
 The game uses [Parchment](https://github.com/curiousdannii/parchment) as the web-based z-machine interpreter.
 
 For more information on the Z-machine, please see my [awesome-z-machine](https://github.com/cschweda/awesome-z-machine) repo.
-
-## Download
-
-- [The compiled .z5 file](https://github.com/cschweda/inform6-haunted-house/blob/main/haunted.z5)
-
-Any z-machine interpreter can be used to run the game.
