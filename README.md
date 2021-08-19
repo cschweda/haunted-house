@@ -6,7 +6,7 @@
 
 <p align="center">
 
-<img src="https://github.com/cschweda/inform6-haunted-house/blob/main/hauntedhouse-trs-cover.jpg" alt="Haunted House Cover" />
+<img src="https://github.com/cschweda/inform6-haunted-house/blob/main/hauntedhouse-trs-cover.jpg" alt="Haunted House Cover" style="margin-top: 15px; margin-bottom: 15px" />
 
 </p>
 
