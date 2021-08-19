@@ -2,7 +2,7 @@
 
 # Haunted House
 
-> An Inform 6 port of Radio Shack's Model I/III adventure (circa 1979).
+> An [Inform 6](https://www.inform-fiction.org/) port of Radio Shack's Model I/III adventure (circa 1979).
 
 ## Original
 
@@ -10,7 +10,7 @@
 
 - A full map and walkthrough are available here: https://www.figmentfly.com/hauntedhouse/hauntedhouse.html
 
-## My version
+## My Inform 6 version
 
 ** Still in progress. **
 
@@ -23,3 +23,9 @@ The game is written in [Inform 6](https://www.inform-fiction.org/) and compiled 
 The game uses [Parchment](https://github.com/curiousdannii/parchment) as the web-based z-machine interpreter.
 
 For more information on the Z-machine, please see my [awesome-z-machine](https://github.com/cschweda/awesome-z-machine) repo.
+
+## Download
+
+- [The compiled .z5 file](https://github.com/cschweda/inform6-haunted-house/blob/main/haunted.z5)
+
+Any z-machine interpreter can be used to run the game.
