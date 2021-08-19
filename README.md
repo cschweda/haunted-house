@@ -1,14 +1,16 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/ae926103-8058-4dc8-af06-49ed48da3128/deploy-status)](https://app.netlify.com/sites/inform6-haunted-house/deploys) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+# Haunted House
+
 > An Inform 6 port of Radio Shack's Model I/III adventure (circa 1979).
 
-## Original Game
+## Original
 
 - A playable version of the original game (with annotated source code) is here: https://computerarcheology.com/TRS80/HauntedHouse/
 
 - A full map and walkthrough are available here: https://www.figmentfly.com/hauntedhouse/hauntedhouse.html
 
-## Play my retro version of Haunted House
+## My version
 
 ** Still in progress. **
 
