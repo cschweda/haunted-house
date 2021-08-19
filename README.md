@@ -1,4 +1,6 @@
-An Inform 6 port of Radio Shack's Model I/III adventure (circa 1979).
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ae926103-8058-4dc8-af06-49ed48da3128/deploy-status)](https://app.netlify.com/sites/inform6-haunted-house/deploys) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> An Inform 6 port of Radio Shack's Model I/III adventure (circa 1979).
 
 ## Original Game
 
