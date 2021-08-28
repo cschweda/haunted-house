@@ -33,8 +33,9 @@ Include "VerbLib";
 Class Room
 with before [;
             
-                  
+         
     ],
+    after [;],
     has     light;
 
 Class Scenic
@@ -239,11 +240,11 @@ w_to den,
 armor_fled 0,
 s_to [;
     if (parent(knife)==player && self.armor_fled == 0) {
-        print "^ ** A suit of armor flees when it spots your knife! **^";
+        print "^ ** A suit of armor flees when it spots your knife! **";
         self.armor_fled = 1;
         return breakfast_room;
     } else if (parent(knife)~=player) {
-        print_ret "^ ** An animated suit of armor blocks your way!  **^";
+        print_ret "^ ** An animated suit of armor blocks your way!  **";
     } else {
        return breakfast_room;
     }
@@ -259,7 +260,7 @@ s_to [;
 !                 if (parent(bucket_of_water)==player && player in master_bedroom) {
 !                     move bucket_of_water to limbo;
                     
-!                     print_ret "Thrown. ^The bucket and water disappears into the fire. ^Suddenly, you feel a mysterious force pull the empty bucket from your hands. It, too, disappears into the fire. ^But to no effect. The fire grows hotter.";
+!                     print_ret "Thrown. ^The bucket and water disappear into the fire. ^Suddenly, you feel a mysterious force pull the empty bucket from your hands. It, too, disappears into the fire. ^But to no effect. The fire grows hotter.";
 !                 }
 !             Drink:
 !                 if (parent(bucket_of_water)==player) {
@@ -276,6 +277,27 @@ s_to [;
 !                 }
 !        ]
 !  ;
+
+Object bucket "bucket" kitchen
+  with name "bucket" "pail",
+  getBucketStatus [;
+           if (child(bucket) == water) return " of water";
+           return "";
+        ],
+  initial [;
+        "There is bucket", (string) self.getBucketStatus()," here.";],
+    description [;
+        "It's a bucket", (string) self.getBucketStatus(),".";],
+    has container open;
+
+
+Object water "water" bucket
+    with name "water" "liquid",
+    article "some",
+    description "Looks like water to me."
+    ;
+
+
 
 
 
@@ -446,6 +468,46 @@ Include "Grammar";
 ! ============================================================================ !
 ! Verb Updates
 ! ============================================================================ !
+
+! ------------------------------------------------------------------------------
+!   Show doors
+! ------------------------------------------------------------------------------
+
+[ DirsSub i j loc;
+ if (location == thedark)
+ {
+  if (real_location has visited) loc = real_location;
+  else "You can't see any exits as it is totally dark.";
+ }
+ else loc = location;
+ j = 0;
+ objectloop(i in Compass)
+  if(loc provides (i.door_dir) && metaclass(loc.(i.door_dir))~=nothing)
+   j++;
+ if (j == 0) "There are no obvious exits.";
+ print "You can go ";
+ objectloop(i in Compass)
+ {
+  if(loc provides (i.door_dir) && metaclass(loc.(i.door_dir))~=nothing)
+  {
+   LanguageDirection(i.door_dir);
+   #ifdef ShowRooms;
+    print " (to ", (the) DirTo(i, loc), ")";
+   #endif;
+   j--;
+   if (j == 1) print " or ";
+   else if (j == 0) ".";
+   else print ", ";
+  }
+ }
+];
+
+Verb meta 'dirs' 'directions'
+     *                                   -> Dirs;
+Verb meta 'list'
+     * 'exits'/'dirs'/'directions'       -> Dirs;
+Verb meta 'exits'
+      *                                  -> Dirs;
 
 
 ! ------------------------------------------------------------------------------
