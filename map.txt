@@ -1,0 +1,42 @@
+First Floor:
+                    +---------------+
+                    |  Outside     |
+                    |  House       |
+                    +-------+------+
+                            |
+                    +-------+------+
+         +----------+   Foyer     +---------+
+         |          |             |         |
+         |          +------+------+         |
+         |                 |                |
+    +----+-----+    +-----+-----+   +------+-----+
+    |  Living  |    |    Den    |   |   East     |
+    |  Room    |    |           |   |   Hall     |
+    +----+-----+    +-----+-----+   +------+-----+
+         |                |                |
+    +----+-----+    +-----+-----+   +-----+------+
+    | Dining   |    | Kitchen   |   |   West     |
+    | Room     +----+           |   |   Hall     |
+    +----+-----+    +-----+-----+   +-----+------+
+         |                |                |
+         |          +-----+-----+         |
+         |          | Breakfast |         |
+         |          |   Room    |         |
+         |          +-----+-----+         |
+         |                |               |
+    +----+-----+    +-----+-----+   +----+------+
+    | Servants |    | Master    |   |  Servants  |
+    | Quarters2|    | Bedroom   |   | Quarters1  |
+    +----------+    +-----------+   +-----------+
+
+
+Legend:
++----+ Room boundaries
+|    | Vertical connections
+----- Horizontal connections
+
+Notes:
+- PLUGH teleports from Outside to Foyer
+- Armor blocks Kitchen->Breakfast until scared with knife
+- Hall door needs key from Servants Quarters 2
+- Fire blocks south exit from Master Bedroom
